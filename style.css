@@ -1,77 +1,96 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f3f6fa;
+/* ==================== */
+/* 🌍 GLOBAL            */
+/* ==================== */
+html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
-}
-
-.agenda-container {
-  max-width: 600px;
-  margin: 30px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.delete-btn {
-  margin-left: 10px;
-  background: red;
-  color: white;
-  border: none;
-  padding: 2px 6px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  background: darkred;
-}
-
-h1 {
-  text-align: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #e9f0ff, #fdfdff);
   color: #333;
 }
 
+/* Le conteneur principal occupe tout l’écran */
+.agenda-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* ==================== */
+/* 🏷️ HEADER            */
+/* ==================== */
+h1 {
+  text-align: center;
+  margin: 10px 0 20px 0;
+  color: #222;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* ==================== */
+/* 📋 FORMULAIRE        */
+/* ==================== */
 form {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 form input, form button {
   padding: 10px;
   font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+form input[type="text"] {
+  flex: 1;
+  min-width: 200px;
 }
 
 form button {
   background: #0078ff;
   color: white;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.2s;
 }
-
 form button:hover {
   background: #005fcc;
 }
 
+/* ==================== */
+/* 📆 LISTE EVENEMENTS */
+/* ==================== */
 #agenda {
+  flex: 1; /* occupe tout l’espace restant */
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding-right: 10px;
 }
 
 .event-day {
   border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 8px;
-  background: #fafafa;
+  padding: 15px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
 .event-day h3 {
   margin: 0 0 10px 0;
   color: #0078ff;
+  font-size: 18px;
 }
 
 .event-day ul {
@@ -79,19 +98,9 @@ form button:hover {
   padding-left: 20px;
 }
 
-
-/* Couleurs selon la priorité */
-.priority-H {
-  color: red;
-  font-weight: bold;
-}
-.priority-M {
-  color: orange;
-}
-.priority-P {
-  color: green;
-}
-
+/* ==================== */
+/* 🗑️ BOUTON SUPPRESSION */
+/* ==================== */
 .delete-btn {
   margin-left: 10px;
   background: red;
@@ -100,16 +109,23 @@ form button:hover {
   padding: 2px 6px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s;
 }
 .delete-btn:hover {
   background: darkred;
 }
 
 /* ==================== */
-/* 🎨 STYLE CALENDRIER  */
+/* 🔴 PRIORITÉS         */
 /* ==================== */
+.priority-H { color: red; font-weight: bold; }
+.priority-M { color: orange; }
+.priority-P { color: green; }
 
-/* Barre navigation calendrier */
+/* ==================== */
+/* 📅 CALENDRIER        */
+/* ==================== */
 .calendar-nav {
   display: flex;
   justify-content: space-between;
@@ -118,7 +134,7 @@ form button:hover {
 }
 
 .calendar-nav h2 {
-  font-size: 20px;
+  font-size: 22px;
   text-transform: capitalize;
   color: #0078ff;
 }
@@ -127,7 +143,7 @@ form button:hover {
   background: #0078ff;
   color: white;
   border: none;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
@@ -136,8 +152,9 @@ form button:hover {
   background: #005fcc;
 }
 
-/* Grille calendrier */
+/* Grille calendrier → occupe toute la largeur */
 #calendar {
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
@@ -146,28 +163,27 @@ form button:hover {
 
 /* Case de chaque jour */
 .day {
-  min-height: 100px;
+  min-height: 120px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 5px;
-  background: #fafafa;
-  position: relative;
+  padding: 6px;
+  background: #fff;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-
 .day.empty {
   background: transparent;
   border: none;
+  box-shadow: none;
 }
 
 /* Numéro du jour */
 .day h3 {
-  margin: 0;
-  font-size: 12px;
+  margin: 0 0 4px 0;
+  font-size: 13px;
   color: #555;
   font-weight: bold;
-  align-self: flex-start;
 }
 
 /* Événement dans une case */
@@ -176,33 +192,27 @@ form button:hover {
   margin-top: 4px;
   padding: 2px 4px;
   border-radius: 4px;
-  display: block;
   word-wrap: break-word;
 }
 
 /* Styles selon priorité */
-.event.priority-H {
-  background: #ff4d4d;
-  color: white;
-}
-.event.priority-M {
-  background: #ffa500;
-  color: white;
-}
-.event.priority-P {
-  background: #4caf50;
-  color: white;
-}
+.event.priority-H { background: #ff4d4d; color: white; }
+.event.priority-M { background: #ffa500; color: white; }
+.event.priority-P { background: #4caf50; color: white; }
 
-
+/* ==================== */
+/* 🎨 OPTIONS PRIORITÉ */
+/* ==================== */
 .priority-options {
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 .priority-options input {
-  display: none; /* on cache les radios natifs */
+  display: none;
 }
 
 .dot {
@@ -218,7 +228,6 @@ form button:hover {
 .dot.medium { background: orange; }
 .dot.low { background: green; }
 
-/* Quand l’option est sélectionnée → cercle avec bordure noire */
 .priority-options input:checked + .dot {
   border: 2px solid #000;
 }

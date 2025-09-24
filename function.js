@@ -2,55 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("event-form");
   const dateInput = document.getElementById("event-date");
   const titleInput = document.getElementById("event-title");
-  const priorityInput = document.getElementById("event-priority"); // <-- ajout du champ priorité
   const agenda = document.getElementById("agenda");
 
   // Récupération des événements sauvegardés
   let events = JSON.parse(localStorage.getItem("events")) || {};
+  let currentDate = new Date();
 
-  // Fonction d'affichage
-  function renderAgenda() {
-    agenda.innerHTML = "";
-    Object.keys(events)
-      .sort()
-      .forEach(date => {
-        const dayDiv = document.createElement("div");
-        dayDiv.className = "event-day";
-
-        // Date en titre
-        const h3 = document.createElement("h3");
-        h3.textContent = date;
-        dayDiv.appendChild(h3);
-
-        // Liste des événements
-        const ul = document.createElement("ul");
-        events[date].forEach((ev, index) => {
-          const li = document.createElement("li");
-
-          // affichage titre + priorité
-          const span = document.createElement("span");
-          span.textContent = `${ev.title} (${priorityLabel(ev.priority)})`;
-          span.className = "priority-" + ev.priority;
-          li.appendChild(span);
-
-          // Bouton supprimer
-          const btn = document.createElement("button");
-          btn.textContent = "❌";
-          btn.className = "delete-btn";
-          btn.addEventListener("click", () => {
-            deleteEvent(date, index);
-          });
-
-          li.appendChild(btn);
-          ul.appendChild(li);
-        });
-
-        dayDiv.appendChild(ul);
-        agenda.appendChild(dayDiv);
-      });
-  }
-
-  // Convertir le code en texte lisible
+  // Convertir le code priorité en texte (utile si besoin)
   function priorityLabel(code) {
     switch (code) {
       case "H": return "Haute";
@@ -63,36 +21,125 @@ document.addEventListener("DOMContentLoaded", () => {
   // Fonction suppression
   function deleteEvent(date, index) {
     events[date].splice(index, 1);
-
-    // Si la date n’a plus d’événements, on la supprime
     if (events[date].length === 0) {
       delete events[date];
     }
-
     localStorage.setItem("events", JSON.stringify(events));
-    renderAgenda();
+    renderCalendar();
   }
 
-  // Gestion de l'ajout d'événement
+  // Fonction d'affichage sous forme de calendrier
+  function renderCalendar() {
+    agenda.innerHTML = "";
+
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    // Navigation + titre du mois
+    const nav = document.createElement("div");
+    nav.className = "calendar-nav";
+
+    const prevBtn = document.createElement("button");
+    prevBtn.textContent = "◀";
+    prevBtn.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+    });
+
+    const nextBtn = document.createElement("button");
+    nextBtn.textContent = "▶";
+    nextBtn.addEventListener("click", () => {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+    });
+
+    const title = document.createElement("h2");
+    title.textContent = currentDate.toLocaleDateString("fr-FR", {
+      month: "long",
+      year: "numeric"
+    });
+
+    nav.appendChild(prevBtn);
+    nav.appendChild(title);
+    nav.appendChild(nextBtn);
+    agenda.appendChild(nav);
+
+    // Grille calendrier
+    const calendar = document.createElement("div");
+    calendar.id = "calendar";
+
+    // Premier jour du mois
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Décalage (lundi = 0, dimanche = 6)
+    let startDay = firstDay === 0 ? 6 : firstDay - 1;
+
+    // Cases vides avant le 1er
+    for (let i = 0; i < startDay; i++) {
+      const emptyCell = document.createElement("div");
+      emptyCell.className = "day empty";
+      calendar.appendChild(emptyCell);
+    }
+
+    // Cases pour chaque jour
+    for (let day = 1; day <= daysInMonth; day++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
+
+      const fullDate = `${year}-${String(month + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+
+      // Numéro du jour
+      const h3 = document.createElement("h3");
+      h3.textContent = day;
+      cell.appendChild(h3);
+
+      // Événements de ce jour
+      if (events[fullDate]) {
+        events[fullDate].forEach((ev, index) => {
+          const span = document.createElement("span");
+          span.className = "event priority-" + ev.priority;
+          span.textContent = ev.title;
+
+          // bouton supprimer
+          const btn = document.createElement("button");
+          btn.textContent = "❌";
+          btn.className = "delete-btn";
+          btn.addEventListener("click", () => {
+            deleteEvent(fullDate, index);
+          });
+
+          span.appendChild(btn);
+          cell.appendChild(span);
+        });
+      }
+
+      calendar.appendChild(cell);
+    }
+
+    agenda.appendChild(calendar);
+  }
+
+  // Gestion ajout d'événement
   form.addEventListener("submit", e => {
     e.preventDefault();
 
     const date = dateInput.value;
     const title = titleInput.value.trim();
-    const priority = priorityInput.value; // <-- récupération de la priorité
+    const priority = document.querySelector("input[name='event-priority']:checked")?.value; // <-- récup du radio sélectionné
+
     if (!date || !title || !priority) return;
 
     if (!events[date]) {
       events[date] = [];
     }
-    // on enregistre un objet {title, priority}
     events[date].push({ title, priority });
 
     localStorage.setItem("events", JSON.stringify(events));
-    renderAgenda();
+    renderCalendar();
     form.reset();
   });
 
   // Affichage initial
-  renderAgenda();
+  renderCalendar();
 });

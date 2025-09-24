@@ -13,16 +13,27 @@
     <form id="event-form">
       <input type="date" id="event-date" required>
       <input type="text" id="event-title" placeholder="Titre de l'événement" required>
+
+      <!-- Sélecteur de priorité -->
+     <div class="priority-options">
+  <label>
+    <input type="radio" name="event-priority" value="H" required>
+    <span class="dot high"></span>
+  </label>
+  <label>
+    <input type="radio" name="event-priority" value="M">
+    <span class="dot medium"></span>
+  </label>
+  <label>
+    <input type="radio" name="event-priority" value="P">
+    <span class="dot low"></span>
+  </label>
+</div>
+
       <button type="submit">Ajouter</button>
     </form>
-    
-    <select id="event-priority" required>
-    <option value="H">Haute</option>
-    <option value="M">Moyenne</option>
-    <option value="P">Petite</option>
-  </select>
 
-    <!-- Zone d'affichage -->
+    <!-- Zone d'affichage (calendrier ou liste) -->
     <div id="agenda"></div>
   </div>
 

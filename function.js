@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("event-form");
   const dateInput = document.getElementById("event-date");
   const titleInput = document.getElementById("event-title");
+  const priorityInput = document.getElementById("event-priority"); // <-- ajout du champ priorité
   const agenda = document.getElementById("agenda");
 
   // Récupération des événements sauvegardés
@@ -25,7 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const ul = document.createElement("ul");
         events[date].forEach((ev, index) => {
           const li = document.createElement("li");
-          li.textContent = ev + " ";
+
+          // affichage titre + priorité
+          const span = document.createElement("span");
+          span.textContent = `${ev.title} (${priorityLabel(ev.priority)})`;
+          span.className = "priority-" + ev.priority;
+          li.appendChild(span);
 
           // Bouton supprimer
           const btn = document.createElement("button");
@@ -42,6 +48,16 @@ document.addEventListener("DOMContentLoaded", () => {
         dayDiv.appendChild(ul);
         agenda.appendChild(dayDiv);
       });
+  }
+
+  // Convertir le code en texte lisible
+  function priorityLabel(code) {
+    switch (code) {
+      case "H": return "Haute";
+      case "M": return "Moyenne";
+      case "P": return "Petite";
+      default: return "Inconnue";
+    }
   }
 
   // Fonction suppression
@@ -63,12 +79,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const date = dateInput.value;
     const title = titleInput.value.trim();
-    if (!date || !title) return;
+    const priority = priorityInput.value; // <-- récupération de la priorité
+    if (!date || !title || !priority) return;
 
     if (!events[date]) {
       events[date] = [];
     }
-    events[date].push(title);
+    // on enregistre un objet {title, priority}
+    events[date].push({ title, priority });
 
     localStorage.setItem("events", JSON.stringify(events));
     renderAgenda();

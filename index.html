@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Agenda en ligne</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="agenda-container">
+    <h1>📅 Mon Agenda</h1>
+
+    <!-- Formulaire d'ajout -->
+    <form id="event-form">
+      <input type="date" id="event-date" required>
+      <input type="text" id="event-title" placeholder="Titre de l'événement" required>
+      <button type="submit">Ajouter</button>
+    </form>
+
+    <!-- Zone d'affichage -->
+    <div id="agenda"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

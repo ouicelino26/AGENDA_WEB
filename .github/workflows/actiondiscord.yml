@@ -1,0 +1,28 @@
+name: Discord Notifications
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  notify:
+    # évite l'échec sur PR venant d'un fork (les secrets n'y sont pas exposés)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message to Discord
+        uses: Ilshidur/action-discord@master   # <- tag existant
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_USERNAME: GitHub Actions
+          DISCORD_AVATAR: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+        with:
+          args: |
+            📢 **${{ github.event_name }}**
+            📂 Repo : **${{ github.repository }}**
+            👤 Auteur : *${{ github.actor }}*
+            🔀 Ref : `${{ github.ref }}`
+            📝 SHA : `${{ github.sha }}`
+            🔗 ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

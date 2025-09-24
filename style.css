@@ -119,9 +119,9 @@ form button:hover {
 /* ==================== */
 /* 🔴 PRIORITÉS         */
 /* ==================== */
-.priority-H { color: red; font-weight: bold; }
-.priority-M { color: orange; }
-.priority-P { color: green; }
+.priority-H { color: purple; font-weight: bold; }
+.priority-M { color: yellowgreen; }
+.priority-P { color: paleturquoise; }
 
 /* ==================== */
 /* 📅 CALENDRIER        */

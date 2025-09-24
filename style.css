@@ -222,3 +222,26 @@ form button:hover {
 .priority-options input:checked + .dot {
   border: 2px solid #000;
 }
+
+.edit-btn {
+  margin-left: 5px;
+  background: #ffa500;
+  color: white;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.edit-btn:hover {
+  background: #cc8400;
+}
+
+.event {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let events = JSON.parse(localStorage.getItem("events")) || {};
   let currentDate = new Date();
 
-  // Convertir le code priorité en texte (utile si besoin)
+  // Convertir le code priorité en texte
   function priorityLabel(code) {
     switch (code) {
       case "H": return "Haute";
@@ -24,6 +24,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (events[date].length === 0) {
       delete events[date];
     }
+    localStorage.setItem("events", JSON.stringify(events));
+    renderCalendar();
+  }
+
+  // Fonction modification
+  function editEvent(date, index) {
+    const event = events[date][index];
+
+    // Demander un nouveau titre
+    const newTitle = prompt("Modifier le titre :", event.title);
+    if (!newTitle) return;
+
+    // Demander une nouvelle priorité
+    const newPriority = prompt(
+      "Modifier la priorité (H = Haute, M = Moyenne, P = Petite) :",
+      event.priority
+    );
+    if (!["H", "M", "P"].includes(newPriority)) return;
+
+    // Mise à jour
+    events[date][index] = { title: newTitle, priority: newPriority };
     localStorage.setItem("events", JSON.stringify(events));
     renderCalendar();
   }
@@ -97,20 +118,33 @@ document.addEventListener("DOMContentLoaded", () => {
       // Événements de ce jour
       if (events[fullDate]) {
         events[fullDate].forEach((ev, index) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "event priority-" + ev.priority;
+
+          // titre
           const span = document.createElement("span");
-          span.className = "event priority-" + ev.priority;
           span.textContent = ev.title;
+          wrapper.appendChild(span);
+
+          // bouton modifier
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "✏️";
+          editBtn.className = "edit-btn";
+          editBtn.addEventListener("click", () => {
+            editEvent(fullDate, index);
+          });
+          wrapper.appendChild(editBtn);
 
           // bouton supprimer
-          const btn = document.createElement("button");
-          btn.textContent = "❌";
-          btn.className = "delete-btn";
-          btn.addEventListener("click", () => {
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "❌";
+          delBtn.className = "delete-btn";
+          delBtn.addEventListener("click", () => {
             deleteEvent(fullDate, index);
           });
+          wrapper.appendChild(delBtn);
 
-          span.appendChild(btn);
-          cell.appendChild(span);
+          cell.appendChild(wrapper);
         });
       }
 
@@ -126,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const date = dateInput.value;
     const title = titleInput.value.trim();
-    const priority = document.querySelector("input[name='event-priority']:checked")?.value; // <-- récup du radio sélectionné
+    const priority = document.querySelector("input[name='event-priority']:checked")?.value;
 
     if (!date || !title || !priority) return;
 

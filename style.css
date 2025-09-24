@@ -1,0 +1,80 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f6fa;
+  margin: 0;
+  padding: 0;
+}
+
+.agenda-container {
+  max-width: 600px;
+  margin: 30px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.delete-btn {
+  margin-left: 10px;
+  background: red;
+  color: white;
+  border: none;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: darkred;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+form input, form button {
+  padding: 10px;
+  font-size: 14px;
+}
+
+form button {
+  background: #0078ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #005fcc;
+}
+
+#agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.event-day {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.event-day h3 {
+  margin: 0 0 10px 0;
+  color: #0078ff;
+}
+
+.event-day ul {
+  margin: 0;
+  padding-left: 20px;
+}

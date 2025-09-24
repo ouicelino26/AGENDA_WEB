@@ -1,28 +1,47 @@
-name: Discord Notifications
+name: "Check shell script"
 
 on:
   push:
-    branches: [main, master]
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
+    branches:
+      - develop
 
 jobs:
-  notify:
-    # évite l'échec sur PR venant d'un fork (les secrets n'y sont pas exposés)
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+  shellcheck:
+    name: Run Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - name: Send message to Discord
-        uses: Ilshidur/action-discord@master   # <- tag existant
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: GitHub Actions
-          DISCORD_AVATAR: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Shellcheck
+        uses: ludeeus/action-shellcheck@master
+
+  discord-notify:
+    name: Notify Discord
+    runs-on: ubuntu-latest
+    needs: shellcheck
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Discord Commits
+        uses: Sniddl/discord-commits@v1.6
         with:
-          args: |
-            📢 **${{ github.event_name }}**
-            📂 Repo : **${{ github.repository }}**
-            👤 Auteur : *${{ github.actor }}*
-            🔀 Ref : `${{ github.ref }}`
-            📝 SHA : `${{ github.sha }}`
-            🔗 ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          include-extras: true
+          embed: |
+            {
+              "title": "{{ commit.title }}",
+              "description": "{{ commit.description }}",
+              "url": "{{ commit.url }}",
+              "color": 3447003,
+              "author": {
+                "name": "{{ commit.author.name }}",
+                "icon_url": "https://github.com/{{ commit.author.username }}.png",
+                "url": "https://github.com/{{ commit.author.username }}"
+              },
+              "footer": {
+                "text": "Commit ID: {{ commit.id }}"
+              },
+              "timestamp": "{{ commit.timestamp }}"
+            }
